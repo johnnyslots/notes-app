@@ -1,3 +1,7 @@
 body {
   background-color: #a5a5a5;
 }
+
+.edit-input {
+  display: block;
+}
