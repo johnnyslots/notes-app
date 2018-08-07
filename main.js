@@ -1,4 +1,5 @@
 const list = document.getElementById('list')
+const colors = ['', 'red', 'blue', 'yellow', 'green', 'orange', 'white']
 
 function createEditButton(noteId, reCreate) {
   const node = document.createElement('button')
@@ -23,6 +24,30 @@ function createDeleteButton(noteId) {
   document.getElementById("list").appendChild(node)
 }
 
+function createDropDown(noteId) {
+  const node = document.createElement('select')
+  node.setAttribute("id", noteId);
+  node.setAttribute('class', 'drop-down')
+  colors.forEach(color => {
+    let option = document.createElement('option')
+    let label = color ? document.createTextNode(color) : document.createTextNode('Select background color')
+    option.setAttribute('value', color)
+    option.appendChild(label)
+    node.appendChild(option)
+  })
+  const children = list.children
+  node.addEventListener('change', () => dropDownValue(noteId))
+  list.appendChild(node)
+}
+
+function dropDownValue(noteId) {
+  const index = noteId.slice(4)
+  const select = document.getElementsByClassName("drop-down")[index];
+  const selectedValue = select.options[select.selectedIndex].value;
+  updateNoteColor(noteId, selectedValue)
+
+}
+
 function createSaveButton(noteId) {
   const node = document.createElement('button')
   node.setAttribute("id", noteId);
@@ -36,13 +61,13 @@ function addNote() {
   const form = document.getElementById('add-note-form')
   const note = document.createTextNode(form.elements[0].value)
   const node = document.createElement('li')
-  const noteId = list.children.length === 0 ? 'note' + 0 : 'note' + list.children.length / 3
+  const noteId = list.children.length === 0 ? 'note' + 0 : 'note' + list.children.length / 4
   node.setAttribute("id", noteId);
   node.appendChild(note)
-  node.classList.add('note')
   list.appendChild(node)
   createEditButton(noteId)
   createDeleteButton(noteId)
+  createDropDown(noteId)
   document.getElementById("add-note-form").reset();
 }
 
@@ -66,20 +91,23 @@ function editNote(noteId) {
   for(let i = listArray.length-1; i >= 0; i--) {
     const node = listArray[i]
     if(node.id === noteId && node.tagName === "LI") {
+      const classListArray = Array.from(node.classList)
+      let colorClass
+      colors.forEach(color => {
+        if(classListArray.indexOf(color) > -1) {
+          colorClass = color
+        }
+      })
+
       const text = node.innerText
       const input = document.createElement('input')
       const saveButton = createSaveButton(node.id)
       setAttributes(input, {
         'type': 'text',
         'value': text,
-        'class': 'edit-input',
+        'class': 'edit-input ' + colorClass,
         'id': noteId
       })
-      // input.setAttribute("type", 'text');
-      // input.setAttribute("name", 'firstname');
-      // input.setAttribute("value", text);
-      // input.setAttribute("class", 'edit-input');
-      // input.setAttribute("id", noteId);
       list.removeChild(node)
       list.removeChild(listArray[i+1])
       list.insertBefore(input, list.children[i])
@@ -93,15 +121,39 @@ function saveNote(noteId) {
   for(let i = listArray.length-1; i >= 0; i--) {
     const node = listArray[i]
     if(node.id === noteId && node.tagName === "INPUT") {
+      const classListArray = Array.from(node.classList)
+      let colorClass
+      colors.forEach(color => {
+        if(classListArray.indexOf(color) > -1) {
+          colorClass = color
+        }
+      })
       const text = node.value
       const reCreateEditButton = createEditButton(noteId, true)
       const listElement = document.createElement('li')
       listElement.innerHTML = text
       listElement.setAttribute("id", noteId);
+      listElement.classList.add(colorClass)
       list.removeChild(node)
       list.removeChild(listArray[i+1])
       list.insertBefore(listElement,list.children[i])
       list.insertBefore(reCreateEditButton, list.children[i+1])
+    }
+  }
+}
+
+function updateNoteColor(noteId, color) {
+  const listArray = Array.from(list.children)
+  for(let i = listArray.length-1; i >= 0; i--) {
+    const node = listArray[i]
+    const classListArray = Array.from(node.classList)
+    if(node.id === noteId && node.tagName === "LI" || node.tagName === "INPUT") {
+      colors.forEach(color => {
+        if(classListArray.indexOf(color) > -1) {
+          node.classList.remove(color)
+        }
+      })
+      node.classList.add(color)
     }
   }
 }

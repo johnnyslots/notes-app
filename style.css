@@ -1,7 +1,67 @@
 body {
-  background-color: #a5a5a5;
+  background-image: url('assets/notepad.jpg');
+  margin: auto;
+}
+
+h1 {
+  text-align: center;
+  font-size: 50px;
+}
+
+ul {
+  list-style-type: none;
+  margin-left: 30%;
+  margin-right: 30%
+}
+
+li {
+  background-color: white;
+  border: 1px solid black;
+  width: 500px;
+  height: 100px;
+  margin-top: 2%;
+}
+
+.red {
+  background-color: red;
+}
+.blue {
+  background-color: blue;
+}
+.yellow {
+  background-color: yellow;
+}
+.green {
+  background-color: green;
+}
+.orange {
+  background-color: orange;
+}
+.white {
+  background-color: white;
 }
 
 .edit-input {
   display: block;
+  width: 500px;
+  height: 100px;
+  margin-top: 2%;
 }
+
+#add-note-form {
+  display: flex;
+  flex-direction: column;
+}
+
+textarea {
+  height: 200px;
+  width: 50%;
+  margin: auto;
+}
+
+#submit-button {
+  width: 500px;
+  margin: auto;
+  margin-top: 1%;
+}
+
